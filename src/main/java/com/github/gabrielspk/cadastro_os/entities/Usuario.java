@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.gabrielspk.cadastro_os.entities.enums.TipoUsuario;
 
 import jakarta.persistence.Entity;
@@ -29,8 +30,9 @@ public class Usuario {
 	@Enumerated(EnumType.STRING)
 	private TipoUsuario tipoUsuario;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "usuarioCriador")
-	private List<Solicitacao> solicitacoes = new ArrayList<>();
+	private List <Solicitacao> solicitacoes = new ArrayList<>();
 	
 	public Usuario() {
 	}
