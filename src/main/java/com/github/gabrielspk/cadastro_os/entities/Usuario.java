@@ -6,13 +6,17 @@ import java.util.Objects;
 
 import com.github.gabrielspk.cadastro_os.entities.enums.TipoUsuario;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "tb_usuario")
 public class Usuario {
 	
 	@Id
@@ -31,8 +35,7 @@ public class Usuario {
 	public Usuario() {
 	}
 	
-	public Usuario(long id, String nome, String email, String senha, TipoUsuario tipoUsuario) {
-		this.id = id;
+	public Usuario(String nome, String email, String senha, TipoUsuario tipoUsuario) {
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
