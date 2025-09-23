@@ -51,6 +51,14 @@ public class Solicitacao implements Serializable {
 		this.usuarioCriador = usuarioCriador;
 	}
 	
+	public Solicitacao(String numeroSI, String descricao, Usuario usuarioCriador) {
+	    this.numeroSI = numeroSI;
+	    this.descricao = descricao;
+	    this.usuarioCriador = usuarioCriador;
+	    this.dataAbertura = LocalDateTime.now();
+	    this.status = StatusSolicitacao.ABERTO;
+	}
+	
 	public Long getId() {
 		return id;
 	}

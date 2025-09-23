@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.github.gabrielspk.cadastro_os.dto.UsuarioCreateDTO;
-import com.github.gabrielspk.cadastro_os.dto.UsuarioDTO;
-import com.github.gabrielspk.cadastro_os.entities.Usuario;
-import com.github.gabrielspk.cadastro_os.services.UsuarioService;
+import com.github.gabrielspk.cadastro_os.dto.SolicitacaoCreateDTO;
+import com.github.gabrielspk.cadastro_os.dto.SolicitacaoDTO;
+import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
+import com.github.gabrielspk.cadastro_os.services.SolicitacaoService;
 
 import jakarta.validation.Valid;
 
@@ -27,36 +27,35 @@ import jakarta.validation.Valid;
 public class SolicitacaoResource {
 	
 	@Autowired
-	private UsuarioService service;
+	private SolicitacaoService service;
 	
 	@GetMapping
-	public ResponseEntity<List<UsuarioDTO>> findAll() {
-		List<Usuario> usuarioList = service.findAll();
-		List<UsuarioDTO> userDtoList = usuarioList.stream().map(x -> new UsuarioDTO(x)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(userDtoList);
+	public ResponseEntity<List<SolicitacaoDTO>> findAll() {
+		List<Solicitacao> solicitacaoList = service.findAll();
+		List<SolicitacaoDTO> solicitacaoDtoList = solicitacaoList.stream().map(x -> new SolicitacaoDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(solicitacaoDtoList);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
-		Usuario usuario = service.findById(id);
-		return ResponseEntity.ok().body(new UsuarioDTO(usuario));
+	public ResponseEntity<SolicitacaoDTO> findById(@PathVariable Long id) {
+		Solicitacao usuario = service.findById(id);
+		return ResponseEntity.ok().body(new SolicitacaoDTO(usuario));
 	}
 	
 	@PostMapping
-	public ResponseEntity<UsuarioDTO> insert(@Valid @RequestBody UsuarioCreateDTO  usuarioDto){
-		Usuario usuario = service.fromCreateDTO(usuarioDto);
-		usuario = service.Insert(usuario);
+	public ResponseEntity<SolicitacaoDTO> insert(@Valid @RequestBody SolicitacaoCreateDTO  solicitacaoDto){
+		Solicitacao solicitacao = service.fromCreateDTO(solicitacaoDto);
+		solicitacao = service.Insert(solicitacao);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
-				.buildAndExpand(usuario.getId())
+				.buildAndExpand(solicitacao.getId())
 				.toUri();
-		return ResponseEntity.created(uri).body(new UsuarioDTO(usuario));
+		return ResponseEntity.created(uri).body(new SolicitacaoDTO(solicitacao));
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
-	}
-	
+	}	
 }

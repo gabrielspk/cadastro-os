@@ -3,6 +3,8 @@ package com.github.gabrielspk.cadastro_os.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
+
 public class SolicitacaoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -12,17 +14,16 @@ public class SolicitacaoDTO implements Serializable {
     private LocalDateTime dataAbertura;
     private LocalDateTime dataFechamento;
     private String status;
-    private UsuarioDTO usuarioCriador;
+    private String usuarioCriador;
 	
-    public SolicitacaoDTO(Long id, String numeroSI, String descricao, LocalDateTime dataAbertura,
-			LocalDateTime dataFechamento, String status, UsuarioDTO usuarioCriador) {
-		this.id = id;
-		this.numeroSI = numeroSI;
-		this.descricao = descricao;
-		this.dataAbertura = dataAbertura;
-		this.dataFechamento = dataFechamento;
-		this.status = status;
-		this.usuarioCriador = usuarioCriador;
+    public SolicitacaoDTO(Solicitacao solicitacao) {
+		this.id = solicitacao.getId();
+		this.numeroSI = solicitacao.getNumeroSI();
+		this.descricao = solicitacao.getDescricao();
+		this.dataAbertura = solicitacao.getDataAbertura();
+		this.dataFechamento = solicitacao.getDataFechamento();
+		this.status = solicitacao.getStatus().name();
+		this.usuarioCriador = solicitacao.getUsuarioCriador().getNome();
 	}
 
 	public Long getId() {
@@ -73,11 +74,11 @@ public class SolicitacaoDTO implements Serializable {
 		this.status = status;
 	}
 
-	public UsuarioDTO getUsuarioCriador() {
+	public String getUsuarioCriador() {
 		return usuarioCriador;
 	}
 
-	public void setUsuarioCriador(UsuarioDTO usuarioCriador) {
+	public void setUsuarioCriador(String usuarioCriador) {
 		this.usuarioCriador = usuarioCriador;
 	}
 }
