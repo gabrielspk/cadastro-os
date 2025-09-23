@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.github.gabrielspk.cadastro_os.dto.SolicitacaoCreateDTO;
 import com.github.gabrielspk.cadastro_os.dto.SolicitacaoDTO;
+import com.github.gabrielspk.cadastro_os.dto.SolicitacaoUpdateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
 import com.github.gabrielspk.cadastro_os.services.SolicitacaoService;
 
@@ -57,5 +59,14 @@ public class SolicitacaoResource {
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
-	}	
+	}
+	
+	@PatchMapping("/{id}")
+	public ResponseEntity<SolicitacaoDTO> partialUpdate(
+	        @PathVariable Long id,
+	        @RequestBody SolicitacaoUpdateDTO dto) {
+
+	    Solicitacao updated = service.patch(id, dto);
+	    return ResponseEntity.ok(new SolicitacaoDTO(updated));
+	}
 }
