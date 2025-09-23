@@ -1,16 +1,18 @@
 package com.github.gabrielspk.cadastro_os.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.gabrielspk.cadastro_os.dto.SolicitacaoCreateDTO;
 import com.github.gabrielspk.cadastro_os.dto.SolicitacaoUpdateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
+import com.github.gabrielspk.cadastro_os.entities.enums.StatusSolicitacao;
 import com.github.gabrielspk.cadastro_os.repositories.SolicitacaoRepository;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
 import com.github.gabrielspk.cadastro_os.services.exceptions.DatabaseException;
@@ -32,8 +34,16 @@ public class SolicitacaoService {
 		return new Solicitacao(dto.getNumeroSI(), dto.getDescricao(), usuario);
 	}
 
-	public List<Solicitacao> findAll() {
-		return solicitacaoRepository.findAll();
+	public Page<Solicitacao> findAll(StatusSolicitacao status, Long usuarioId, Pageable pageable) {
+	    if (status != null && usuarioId != null) {
+	        return solicitacaoRepository.findByStatusAndUsuarioCriador_Id(status, usuarioId, pageable);
+	    } else if (status != null) {
+	        return solicitacaoRepository.findByStatus(status, pageable);
+	    } else if (usuarioId != null) {
+	        return solicitacaoRepository.findByUsuarioCriador_Id(usuarioId, pageable);
+	    } else {
+	        return solicitacaoRepository.findAll(pageable);
+	    }
 	}
 
 	public Solicitacao findById(Long id) {

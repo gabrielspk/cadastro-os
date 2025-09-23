@@ -14,7 +14,8 @@ public class SolicitacaoDTO implements Serializable {
     private LocalDateTime dataAbertura;
     private LocalDateTime dataFechamento;
     private String status;
-    private String usuarioCriador;
+    private Long usuarioCriadorId;
+    private String usuarioCriadorNome;
 	
     public SolicitacaoDTO(Solicitacao solicitacao) {
 		this.id = solicitacao.getId();
@@ -23,7 +24,8 @@ public class SolicitacaoDTO implements Serializable {
 		this.dataAbertura = solicitacao.getDataAbertura();
 		this.dataFechamento = solicitacao.getDataFechamento();
 		this.status = solicitacao.getStatus().name();
-		this.usuarioCriador = solicitacao.getUsuarioCriador().getNome();
+		this.usuarioCriadorId = solicitacao.getUsuarioCriador().getId();
+		this.usuarioCriadorNome = solicitacao.getUsuarioCriador().getNome();
 	}
 
 	public Long getId() {
@@ -74,11 +76,22 @@ public class SolicitacaoDTO implements Serializable {
 		this.status = status;
 	}
 
-	public String getUsuarioCriador() {
-		return usuarioCriador;
+	public Long getUsuarioCriadorId() {
+		return usuarioCriadorId;
 	}
 
-	public void setUsuarioCriador(String usuarioCriador) {
-		this.usuarioCriador = usuarioCriador;
+	public void setUsuarioCriadorId(Long usuarioCriadorId) {
+		this.usuarioCriadorId = usuarioCriadorId;
 	}
+
+	public String getUsuarioCriadorNome() {
+		return usuarioCriadorNome;
+	}
+
+	public void setUsuarioCriadorNome(String usuarioCriadorNome) {
+		this.usuarioCriadorNome = usuarioCriadorNome;
+	}
+	
+	
+	
 }

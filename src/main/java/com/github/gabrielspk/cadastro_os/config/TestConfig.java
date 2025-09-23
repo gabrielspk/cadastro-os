@@ -34,14 +34,50 @@ public class TestConfig implements CommandLineRunner {
 		usuarioRepository.saveAll(Arrays.asList(usuarioAdmin, usuarioComum));
 		
 		Solicitacao s1 = new Solicitacao(
-				"11234",
-				"fizeram besteira",
-				LocalDateTime.now(),
-				null,
-				StatusSolicitacao.ABERTO,
-				usuarioAdmin
+		        "11234",
+		        "Erro no sistema de login",
+		        LocalDateTime.now().minusDays(2),
+		        null,
+		        StatusSolicitacao.ABERTO,
+		        usuarioAdmin
 		);
-		
-		solicitacaoRepository.saveAll(Arrays.asList(s1));
+
+		Solicitacao s2 = new Solicitacao(
+		        "11235",
+		        "Pagamento não processado",
+		        LocalDateTime.now().minusDays(5),
+		        LocalDateTime.now().minusDays(2),
+		        StatusSolicitacao.CONCLUIDA,
+		        usuarioComum
+		);
+
+		Solicitacao s3 = new Solicitacao(
+		        "11236",
+		        "Bug na geração de relatórios",
+		        LocalDateTime.now().minusHours(10),
+		        null,
+		        StatusSolicitacao.ABERTO,
+		        usuarioComum
+		);
+
+		Solicitacao s4 = new Solicitacao(
+		        "11237",
+		        "Solicitação de nova funcionalidade",
+		        LocalDateTime.now().minusWeeks(1),
+		        null,
+		        StatusSolicitacao.EM_ANDAMENTO,
+		        usuarioAdmin
+		);
+
+		Solicitacao s5 = new Solicitacao(
+		        "11238",
+		        "Erro de validação nos dados",
+		        LocalDateTime.now().minusDays(3),
+		        LocalDateTime.now().minusDays(1),
+		        StatusSolicitacao.CONCLUIDA,
+		        usuarioComum
+		);
+
+		solicitacaoRepository.saveAll(Arrays.asList(s1, s2, s3, s4, s5));
 	}	
 }

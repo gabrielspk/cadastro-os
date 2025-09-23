@@ -1,10 +1,10 @@
 package com.github.gabrielspk.cadastro_os.resources;
 
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,6 +21,7 @@ import com.github.gabrielspk.cadastro_os.dto.SolicitacaoCreateDTO;
 import com.github.gabrielspk.cadastro_os.dto.SolicitacaoDTO;
 import com.github.gabrielspk.cadastro_os.dto.SolicitacaoUpdateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
+import com.github.gabrielspk.cadastro_os.entities.enums.StatusSolicitacao;
 import com.github.gabrielspk.cadastro_os.services.SolicitacaoService;
 
 import jakarta.validation.Valid;
@@ -32,10 +34,15 @@ public class SolicitacaoResource {
 	private SolicitacaoService service;
 	
 	@GetMapping
-	public ResponseEntity<List<SolicitacaoDTO>> findAll() {
-		List<Solicitacao> solicitacaoList = service.findAll();
-		List<SolicitacaoDTO> solicitacaoDtoList = solicitacaoList.stream().map(x -> new SolicitacaoDTO(x)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(solicitacaoDtoList);
+	public ResponseEntity<Page<SolicitacaoDTO>> findAll(
+	        @RequestParam(required = false) StatusSolicitacao status,
+	        @RequestParam(required = false) Long usuarioId,
+	        Pageable pageable) {
+
+	    Page<Solicitacao> solicitacoes = service.findAll(status, usuarioId, pageable);
+	    Page<SolicitacaoDTO> solicitacaoDtoPage = solicitacoes.map(SolicitacaoDTO::new);
+
+	    return ResponseEntity.ok().body(solicitacaoDtoPage);
 	}
 	
 	@GetMapping(value = "/{id}")
