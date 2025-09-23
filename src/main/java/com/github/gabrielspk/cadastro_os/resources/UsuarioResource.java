@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.github.gabrielspk.cadastro_os.dto.UsuarioCreateDTO;
 import com.github.gabrielspk.cadastro_os.dto.UsuarioDTO;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.services.UsuarioService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/usuarios")
@@ -40,10 +43,14 @@ public class UsuarioResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Usuario> insert(@RequestBody Usuario usuario){
+	public ResponseEntity<UsuarioDTO> insert(@Valid @RequestBody UsuarioCreateDTO  usuarioDto){
+		Usuario usuario = service.fromCreateDTO(usuarioDto);
 		usuario = service.Insert(usuario);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
-		return ResponseEntity.created(uri).body(usuario);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(usuario.getId())
+				.toUri();
+		return ResponseEntity.created(uri).body(new UsuarioDTO(usuario));
 	}
 	
 	@DeleteMapping(value = "/{id}")

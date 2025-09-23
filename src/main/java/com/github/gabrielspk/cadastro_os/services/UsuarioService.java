@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.github.gabrielspk.cadastro_os.dto.UsuarioCreateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
 import com.github.gabrielspk.cadastro_os.services.exceptions.DatabaseException;
@@ -17,6 +18,10 @@ public class UsuarioService {
 	
 	@Autowired
 	private UsuarioRepository repository;
+	
+	public Usuario fromCreateDTO(UsuarioCreateDTO dto) {
+	    return new Usuario(dto.getNome(), dto.getEmail(), dto.getSenha(), dto.getTipoUsuario());
+	}
 	
 	public List<Usuario> findAll() {
 		return repository.findAll();
