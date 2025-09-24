@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.github.gabrielspk.cadastro_os.dto.UsuarioCreateDTO;
@@ -14,7 +17,7 @@ import com.github.gabrielspk.cadastro_os.services.exceptions.DatabaseException;
 import com.github.gabrielspk.cadastro_os.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
 	
 	@Autowired
 	private UsuarioRepository repository;
@@ -46,7 +49,10 @@ public class UsuarioService {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
-	
-	
-	
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	    return repository.findByEmail(username)
+	            .orElseThrow(() -> new UsernameNotFoundException("Email " + username + " não encontrado"));
+	}
 }
