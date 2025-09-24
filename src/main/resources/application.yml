@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: cadastro-os
+  jpa:
+    open-in-view: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  secret-key: 53cr37
+  expire-lenght: 3600000

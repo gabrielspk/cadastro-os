@@ -8,7 +8,6 @@ public class TokenDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private String email;
-	private String senha;
 	private boolean authenticated;
 	private Date created;
 	private Date expiration;
@@ -17,10 +16,9 @@ public class TokenDTO implements Serializable{
 	
 	public TokenDTO() {}
 
-	public TokenDTO(String email, String senha, boolean authenticated, Date created, Date expiration,
+	public TokenDTO(String email, boolean authenticated, Date created, Date expiration,
 			String accessToken, String refreshToken) {
 		this.email = email;
-		this.senha = senha;
 		this.authenticated = authenticated;
 		this.created = created;
 		this.expiration = expiration;
@@ -34,14 +32,6 @@ public class TokenDTO implements Serializable{
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getSenha() {
-		return senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
 	}
 
 	public boolean isAuthenticated() {

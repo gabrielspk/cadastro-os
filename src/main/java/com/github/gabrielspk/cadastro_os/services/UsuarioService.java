@@ -32,7 +32,7 @@ public class UsuarioService implements UserDetailsService {
 	
 	public Usuario findById(Long id) {
 		Optional<Usuario> obj = repository.findById(id);
-		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+		return obj.orElseThrow(() -> new ResourceNotFoundException("Usuario não encontrado. Id: " + id));
 	}
 	
 	public Usuario Insert(Usuario obj) {
@@ -41,7 +41,7 @@ public class UsuarioService implements UserDetailsService {
 	
 	public void delete(Long id) {
 		if (!repository.existsById(id)) {
-			throw new ResourceNotFoundException(id);
+			throw new ResourceNotFoundException("Usuário não encontrado. Id: " + id);
 		}
 		try {
 			repository.deleteById(id);
