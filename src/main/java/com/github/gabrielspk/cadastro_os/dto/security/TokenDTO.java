@@ -76,7 +76,7 @@ public class TokenDTO implements Serializable{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accessToken, authenticated, created, email, expiration, refreshToken, senha);
+		return Objects.hash(accessToken, authenticated, created, email, expiration, refreshToken);
 	}
 
 	@Override
@@ -90,7 +90,6 @@ public class TokenDTO implements Serializable{
 		TokenDTO other = (TokenDTO) obj;
 		return Objects.equals(accessToken, other.accessToken) && authenticated == other.authenticated
 				&& Objects.equals(created, other.created) && Objects.equals(email, other.email)
-				&& Objects.equals(expiration, other.expiration) && Objects.equals(refreshToken, other.refreshToken)
-				&& Objects.equals(senha, other.senha);
+				&& Objects.equals(expiration, other.expiration) && Objects.equals(refreshToken, other.refreshToken);
 	}
 }
