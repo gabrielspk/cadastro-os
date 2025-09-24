@@ -1,4 +1,4 @@
-package com.github.gabrielspk.cadastro_os.services.exceptions;
+package com.github.gabrielspk.cadastro_os.exceptions;
 
 public class DatabaseException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

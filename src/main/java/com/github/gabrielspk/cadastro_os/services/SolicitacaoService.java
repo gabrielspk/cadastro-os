@@ -13,10 +13,10 @@ import com.github.gabrielspk.cadastro_os.dto.SolicitacaoUpdateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.entities.enums.StatusSolicitacao;
+import com.github.gabrielspk.cadastro_os.exceptions.DatabaseException;
+import com.github.gabrielspk.cadastro_os.exceptions.ResourceNotFoundException;
 import com.github.gabrielspk.cadastro_os.repositories.SolicitacaoRepository;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
-import com.github.gabrielspk.cadastro_os.services.exceptions.DatabaseException;
-import com.github.gabrielspk.cadastro_os.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class SolicitacaoService {
@@ -29,7 +29,7 @@ public class SolicitacaoService {
 
 	public Solicitacao fromCreateDTO(SolicitacaoCreateDTO dto) {
 		Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
-				.orElseThrow(() -> new ResourceNotFoundException(dto.getUsuarioId()));
+				.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado. Id " + dto.getUsuarioId()));
 
 		return new Solicitacao(dto.getNumeroSI(), dto.getDescricao(), usuario);
 	}
@@ -48,7 +48,7 @@ public class SolicitacaoService {
 
 	public Solicitacao findById(Long id) {
 		Optional<Solicitacao> solicitacao = solicitacaoRepository.findById(id);
-		return solicitacao.orElseThrow(() -> new ResourceNotFoundException(id));
+		return solicitacao.orElseThrow(() -> new ResourceNotFoundException("Solicitacao não encontrada"));
 	}
 
 	public Solicitacao Insert(Solicitacao solicitacao) {
@@ -61,7 +61,7 @@ public class SolicitacaoService {
 
 	public void delete(Long id) {
 		if (!solicitacaoRepository.existsById(id)) {
-			throw new ResourceNotFoundException(id);
+			throw new ResourceNotFoundException("Solicitacao não encontrada. Id " + id);
 		}
 		try {
 			solicitacaoRepository.deleteById(id);

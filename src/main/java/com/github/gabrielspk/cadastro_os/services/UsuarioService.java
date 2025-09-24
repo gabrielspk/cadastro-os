@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.github.gabrielspk.cadastro_os.dto.UsuarioCreateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
+import com.github.gabrielspk.cadastro_os.exceptions.DatabaseException;
+import com.github.gabrielspk.cadastro_os.exceptions.ResourceNotFoundException;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
-import com.github.gabrielspk.cadastro_os.services.exceptions.DatabaseException;
-import com.github.gabrielspk.cadastro_os.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class UsuarioService implements UserDetailsService {
