@@ -8,6 +8,5 @@ import com.github.gabrielspk.cadastro_os.entities.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	
-	Optional<Usuario> findByEmail(String numeroSI);
-	
+	Optional<Usuario> findByEmail(String email);
 }

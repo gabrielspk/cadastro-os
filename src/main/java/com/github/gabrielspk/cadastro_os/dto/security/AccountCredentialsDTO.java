@@ -3,12 +3,13 @@ package com.github.gabrielspk.cadastro_os.dto.security;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class CredenciaisContaDTO implements Serializable {
+public class AccountCredentialsDTO implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	private String email;
 	public String senha;
 	
-	public CredenciaisContaDTO() {}
+	public AccountCredentialsDTO() {}
 
 	public String getEmail() {
 		return email;
@@ -39,7 +40,7 @@ public class CredenciaisContaDTO implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CredenciaisContaDTO other = (CredenciaisContaDTO) obj;
+		AccountCredentialsDTO other = (AccountCredentialsDTO) obj;
 		return Objects.equals(email, other.email) && Objects.equals(senha, other.senha);
 	}
 	
