@@ -10,11 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.gabrielspk.cadastro_os.entities.enums.TipoUsuario;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,9 +33,6 @@ public class Usuario implements UserDetails, Serializable {
     private String email;
     private String senha;
 
-    @Enumerated(EnumType.STRING)
-    private TipoUsuario tipoUsuario;
-
     @JsonIgnore
     @OneToMany(mappedBy = "usuarioCriador")
     private List<Solicitacao> solicitacoes = new ArrayList<>();
@@ -58,11 +52,10 @@ public class Usuario implements UserDetails, Serializable {
 
     public Usuario() {}
 
-    public Usuario(String nome, String email, String senha, TipoUsuario tipoUsuario) {
+    public Usuario(String nome, String email, String senha) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
-        this.tipoUsuario = tipoUsuario;
     }
 
     // Getters e Setters
@@ -96,14 +89,6 @@ public class Usuario implements UserDetails, Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    public TipoUsuario getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(TipoUsuario tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
     }
 
     public List<Solicitacao> getSolicitacoes() {

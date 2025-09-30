@@ -23,7 +23,7 @@ public class UsuarioService implements UserDetailsService {
 	private UsuarioRepository repository;
 	
 	public Usuario fromCreateDTO(UsuarioCreateDTO dto) {
-	    return new Usuario(dto.getNome(), dto.getEmail(), dto.getSenha(), dto.getTipoUsuario());
+	    return new Usuario(dto.getNome(), dto.getEmail(), dto.getSenha());
 	}
 	
 	public List<Usuario> findAll() {

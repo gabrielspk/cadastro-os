@@ -18,9 +18,7 @@ public class UsuarioCreateDTO implements Serializable {
 	
 	@NotBlank(message = "Senha é obrigatória")
 	private String senha;
-	
-	private TipoUsuario tipoUsuario;
-	
+		
 	public UsuarioCreateDTO() {
 		
 	}
@@ -48,13 +46,4 @@ public class UsuarioCreateDTO implements Serializable {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-
-	public TipoUsuario getTipoUsuario() {
-		return tipoUsuario;
-	}
-
-	public void setTipoUsuario(TipoUsuario tipoUsuario) {
-		this.tipoUsuario = tipoUsuario;
-	}
-	
 }

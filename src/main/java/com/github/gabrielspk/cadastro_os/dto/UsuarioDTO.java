@@ -16,7 +16,6 @@ public class UsuarioDTO implements Serializable {
         this.id = usuario.getId();
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
-        this.tipoUsuario = usuario.getTipoUsuario().name();
     }
 
 	public Long getId() {

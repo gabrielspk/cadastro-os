@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.github.gabrielspk.cadastro_os.entities.Permission;
 import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.entities.enums.StatusSolicitacao;
-import com.github.gabrielspk.cadastro_os.entities.enums.TipoUsuario;
+import com.github.gabrielspk.cadastro_os.repositories.PermissionRepository;
 import com.github.gabrielspk.cadastro_os.repositories.SolicitacaoRepository;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
 
@@ -25,13 +27,35 @@ public class TestConfig implements CommandLineRunner {
 	@Autowired
 	private SolicitacaoRepository solicitacaoRepository;
 	
+	@Autowired
+	private PermissionRepository permissionRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	@Override
 	public void run(String... args) throws Exception {
 		
-		Usuario usuarioAdmin = new Usuario("Gabriel", "gabriel@email.com", "123", TipoUsuario.ADMIN);
-		Usuario usuarioComum = new Usuario("Maria", "maria@email.com", "123", TipoUsuario.COMUM);
+	    Permission adminPermission = new Permission();
+	    adminPermission.setDescription("ROLE_ADMIN");
+	    
+	    Permission userPermission = new Permission();
+	    userPermission.setDescription("ROLE_USER");
+	    
+	    permissionRepository.saveAll(Arrays.asList(adminPermission, userPermission));
 		
-		usuarioRepository.saveAll(Arrays.asList(usuarioAdmin, usuarioComum));
+	    Usuario usuarioAdmin = new Usuario(
+	            "Gabriel",
+	            "gabriel@email.com",
+	            passwordEncoder.encode("123")
+	    );
+	    usuarioAdmin.setAccountNonExpired(true);
+	    usuarioAdmin.setAccountNonLocked(true);
+	    usuarioAdmin.setCredentialsNonExpired(true);
+	    usuarioAdmin.setEnabled(true);
+	    usuarioAdmin.setPermissions(Arrays.asList(adminPermission));
+		
+		usuarioRepository.saveAll(Arrays.asList(usuarioAdmin));
 		
 		Solicitacao s1 = new Solicitacao(
 		        "11234",
@@ -48,7 +72,7 @@ public class TestConfig implements CommandLineRunner {
 		        LocalDateTime.now().minusDays(5),
 		        LocalDateTime.now().minusDays(2),
 		        StatusSolicitacao.CONCLUIDA,
-		        usuarioComum
+		        usuarioAdmin
 		);
 
 		Solicitacao s3 = new Solicitacao(
@@ -57,7 +81,7 @@ public class TestConfig implements CommandLineRunner {
 		        LocalDateTime.now().minusHours(10),
 		        null,
 		        StatusSolicitacao.ABERTO,
-		        usuarioComum
+		        usuarioAdmin
 		);
 
 		Solicitacao s4 = new Solicitacao(
@@ -75,7 +99,7 @@ public class TestConfig implements CommandLineRunner {
 		        LocalDateTime.now().minusDays(3),
 		        LocalDateTime.now().minusDays(1),
 		        StatusSolicitacao.CONCLUIDA,
-		        usuarioComum
+		        usuarioAdmin
 		);
 
 		solicitacaoRepository.saveAll(Arrays.asList(s1, s2, s3, s4, s5));
