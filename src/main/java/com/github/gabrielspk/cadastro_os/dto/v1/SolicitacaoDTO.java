@@ -1,4 +1,4 @@
-package com.github.gabrielspk.cadastro_os.dto;
+package com.github.gabrielspk.cadastro_os.dto.v1;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

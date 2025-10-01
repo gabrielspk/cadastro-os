@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.github.gabrielspk.cadastro_os.dto.UsuarioCreateDTO;
-import com.github.gabrielspk.cadastro_os.dto.UsuarioDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioCreateDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioDTO;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.services.UsuarioService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/usuarios")
+@RequestMapping(value = "/api/usuarios/v1")
 public class UsuarioResource {
 	
 	@Autowired

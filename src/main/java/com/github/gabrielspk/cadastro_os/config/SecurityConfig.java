@@ -74,7 +74,7 @@ public class SecurityConfig {
                                 "/v3/api-docs"
                         ).permitAll()
                         .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/users").denyAll()
+                        .requestMatchers("/usuarios").denyAll()
                 )
                 .cors(cors -> {})
                 .build();

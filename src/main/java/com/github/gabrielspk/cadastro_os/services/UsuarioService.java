@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.github.gabrielspk.cadastro_os.dto.UsuarioCreateDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioCreateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.exceptions.DatabaseException;
 import com.github.gabrielspk.cadastro_os.exceptions.ResourceNotFoundException;

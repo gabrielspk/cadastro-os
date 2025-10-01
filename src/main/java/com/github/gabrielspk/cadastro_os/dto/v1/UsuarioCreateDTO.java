@@ -1,8 +1,6 @@
-package com.github.gabrielspk.cadastro_os.dto;
+package com.github.gabrielspk.cadastro_os.dto.v1;
 
 import java.io.Serializable;
-
-import com.github.gabrielspk.cadastro_os.entities.enums.TipoUsuario;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

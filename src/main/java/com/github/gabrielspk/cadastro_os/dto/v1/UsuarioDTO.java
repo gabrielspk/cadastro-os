@@ -1,4 +1,4 @@
-package com.github.gabrielspk.cadastro_os.dto;
+package com.github.gabrielspk.cadastro_os.dto.v1;
 
 import java.io.Serializable;
 
@@ -10,7 +10,6 @@ public class UsuarioDTO implements Serializable {
 	private Long id;
     private String nome;
     private String email;
-    private String tipoUsuario;
 
     public UsuarioDTO(Usuario usuario) {
         this.id = usuario.getId();
@@ -40,13 +39,5 @@ public class UsuarioDTO implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getTipoUsuario() {
-		return tipoUsuario;
-	}
-
-	public void setTipoUsuario(String tipoUsuario) {
-		this.tipoUsuario = tipoUsuario;
 	}
 }

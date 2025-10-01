@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.github.gabrielspk.cadastro_os.dto.SolicitacaoCreateDTO;
-import com.github.gabrielspk.cadastro_os.dto.SolicitacaoDTO;
-import com.github.gabrielspk.cadastro_os.dto.SolicitacaoUpdateDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.SolicitacaoCreateDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.SolicitacaoDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.SolicitacaoUpdateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
 import com.github.gabrielspk.cadastro_os.entities.enums.StatusSolicitacao;
 import com.github.gabrielspk.cadastro_os.services.SolicitacaoService;

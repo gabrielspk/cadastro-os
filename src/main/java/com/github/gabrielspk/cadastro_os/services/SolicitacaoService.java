@@ -8,8 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.gabrielspk.cadastro_os.dto.SolicitacaoCreateDTO;
-import com.github.gabrielspk.cadastro_os.dto.SolicitacaoUpdateDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.SolicitacaoCreateDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.SolicitacaoUpdateDTO;
 import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.entities.enums.StatusSolicitacao;
