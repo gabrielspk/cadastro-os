@@ -27,7 +27,7 @@ import com.github.gabrielspk.cadastro_os.services.SolicitacaoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/solicitacoes")
+@RequestMapping(value = "/api/solicitacoes/v1")
 public class SolicitacaoResource {
 	
 	@Autowired

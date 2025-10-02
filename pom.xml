@@ -31,6 +31,8 @@
 		<java.version>17</java.version>
 		<springdoc.version>2.2.0</springdoc.version>
 		<java-jwt.version>4.5.0</java-jwt.version>
+		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<lombok.version>1.18.30</lombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -84,12 +86,53 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${org.mapstruct.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>17</source>
+					<target>17</target>
+					<annotationProcessorPaths>
+						<!-- MapStruct Processor -->
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+						<!-- Lombok (se usar) -->
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<!-- Binding Lombok + MapStruct -->
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>0.2.0</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

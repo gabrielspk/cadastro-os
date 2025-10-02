@@ -2,8 +2,6 @@ package com.github.gabrielspk.cadastro_os.dto.v1;
 
 import java.io.Serializable;
 
-import com.github.gabrielspk.cadastro_os.entities.Usuario;
-
 public class UsuarioDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -11,10 +9,7 @@ public class UsuarioDTO implements Serializable {
     private String nome;
     private String email;
 
-    public UsuarioDTO(Usuario usuario) {
-        this.id = usuario.getId();
-        this.nome = usuario.getNome();
-        this.email = usuario.getEmail();
+    public UsuarioDTO() {
     }
 
 	public Long getId() {
