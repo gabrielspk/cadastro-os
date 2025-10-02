@@ -3,8 +3,6 @@ package com.github.gabrielspk.cadastro_os.dto.v1;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
-
 public class SolicitacaoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -17,15 +15,7 @@ public class SolicitacaoDTO implements Serializable {
     private Long usuarioCriadorId;
     private String usuarioCriadorNome;
 	
-    public SolicitacaoDTO(Solicitacao solicitacao) {
-		this.id = solicitacao.getId();
-		this.numeroSI = solicitacao.getNumeroSI();
-		this.descricao = solicitacao.getDescricao();
-		this.dataAbertura = solicitacao.getDataAbertura();
-		this.dataFechamento = solicitacao.getDataFechamento();
-		this.status = solicitacao.getStatus().name();
-		this.usuarioCriadorId = solicitacao.getUsuarioCriador().getId();
-		this.usuarioCriadorNome = solicitacao.getUsuarioCriador().getNome();
+    public SolicitacaoDTO() {
 	}
 
 	public Long getId() {

@@ -20,7 +20,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.github.gabrielspk.cadastro_os.dto.v1.SolicitacaoCreateDTO;
 import com.github.gabrielspk.cadastro_os.dto.v1.SolicitacaoDTO;
 import com.github.gabrielspk.cadastro_os.dto.v1.SolicitacaoUpdateDTO;
-import com.github.gabrielspk.cadastro_os.entities.Solicitacao;
 import com.github.gabrielspk.cadastro_os.entities.enums.StatusSolicitacao;
 import com.github.gabrielspk.cadastro_os.services.SolicitacaoService;
 
@@ -39,27 +38,27 @@ public class SolicitacaoResource {
 	        @RequestParam(required = false) Long usuarioId,
 	        Pageable pageable) {
 
-	    Page<Solicitacao> solicitacoes = service.findAll(status, usuarioId, pageable);
-	    Page<SolicitacaoDTO> solicitacaoDtoPage = solicitacoes.map(SolicitacaoDTO::new);
+	    Page<SolicitacaoDTO> solicitacoes = service.findAll(status, usuarioId, pageable);
 
-	    return ResponseEntity.ok().body(solicitacaoDtoPage);
+	    return ResponseEntity.ok().body(solicitacoes);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<SolicitacaoDTO> findById(@PathVariable Long id) {
-		Solicitacao usuario = service.findById(id);
-		return ResponseEntity.ok().body(new SolicitacaoDTO(usuario));
+		SolicitacaoDTO solicitacao = service.findById(id);
+		return ResponseEntity.ok().body(solicitacao);
 	}
 	
 	@PostMapping
 	public ResponseEntity<SolicitacaoDTO> insert(@Valid @RequestBody SolicitacaoCreateDTO  solicitacaoDto){
-		Solicitacao solicitacao = service.fromCreateDTO(solicitacaoDto);
-		solicitacao = service.Insert(solicitacao);
+		SolicitacaoDTO solicitacao = service.insert(solicitacaoDto);
+		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
 				.buildAndExpand(solicitacao.getId())
 				.toUri();
-		return ResponseEntity.created(uri).body(new SolicitacaoDTO(solicitacao));
+		
+		return ResponseEntity.created(uri).body(solicitacao);
 	}
 	
 	@DeleteMapping(value = "/{id}")
@@ -73,7 +72,7 @@ public class SolicitacaoResource {
 	        @PathVariable Long id,
 	        @RequestBody SolicitacaoUpdateDTO dto) {
 
-	    Solicitacao updated = service.patch(id, dto);
-	    return ResponseEntity.ok(new SolicitacaoDTO(updated));
+	    SolicitacaoDTO updated = service.patch(id, dto);
+	    return ResponseEntity.ok(updated);
 	}
 }

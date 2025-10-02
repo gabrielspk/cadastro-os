@@ -30,13 +30,13 @@ public class UsuarioResource {
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> findAll() {
         List<UsuarioDTO> usuarios = service.findAll();
-        return ResponseEntity.ok(usuarios);
+        return ResponseEntity.ok().body(usuarios);
     }
 	
     @GetMapping(value = "/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
         UsuarioDTO usuario = service.findById(id);
-        return ResponseEntity.ok(usuario);
+        return ResponseEntity.ok().body(usuario);
     }
 	
     @PostMapping
