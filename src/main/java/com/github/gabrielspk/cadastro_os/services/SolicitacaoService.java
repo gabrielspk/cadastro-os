@@ -1,6 +1,8 @@
 package com.github.gabrielspk.cadastro_os.services;
 
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,8 @@ import com.github.gabrielspk.cadastro_os.exceptions.DatabaseException;
 import com.github.gabrielspk.cadastro_os.exceptions.ResourceNotFoundException;
 import com.github.gabrielspk.cadastro_os.mappers.SolicitacaoMapper;
 import com.github.gabrielspk.cadastro_os.repositories.SolicitacaoRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class SolicitacaoService {
@@ -43,8 +47,7 @@ public class SolicitacaoService {
     }
 
 	public SolicitacaoDTO findById(Long id) {
-		Solicitacao solicitacao = solicitacaoRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Solicitação não encontrado. Id: " + id));
+		Solicitacao solicitacao = findEntityById(id);
 		return mapper.toDTO(solicitacao);
 	}
 
@@ -68,28 +71,39 @@ public class SolicitacaoService {
 		}
 	}
 
-	public SolicitacaoDTO patch(Long id, SolicitacaoUpdateDTO dto) {
-		Solicitacao solicitacao = solicitacaoRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Solicitação não encontrada. Id: " + id));
+	   @Transactional
+	    public SolicitacaoDTO patch(Long id, SolicitacaoUpdateDTO dto) {
+	        Solicitacao solicitacao = findEntityById(id);
 
-		if (dto.getNumeroSI() != null) {
-			solicitacaoRepository.findByNumeroSI(dto.getNumeroSI()).ifPresent(s -> {
-				if (!s.getId().equals(solicitacao.getId())) {
-					throw new DatabaseException("Número de SI já existe " + dto.getNumeroSI());
-				}
-			});
-			solicitacao.setNumeroSI(dto.getNumeroSI());
-		}
-		if (dto.getDescricao() != null) {
-			solicitacao.setDescricao(dto.getDescricao());
-		}
-		if (dto.getDataAbertura() != null) {
-			solicitacao.setDataAbertura(dto.getDataAbertura());
-		}
-		if (dto.getDataFechamento() != null) {
-			solicitacao.setDataFechamento(dto.getDataFechamento());
-		}
-		Solicitacao solicitacaoAtualizada = solicitacaoRepository.save(solicitacao);
-		return mapper.toDTO(solicitacaoAtualizada);
-	}
+	        if (dto.getNumeroSI() != null) {
+	            validarNumeroSIUnico(dto.getNumeroSI(), id);
+	            solicitacao.setNumeroSI(dto.getNumeroSI());
+	        }
+	        if (dto.getDescricao() != null) {
+	            solicitacao.setDescricao(dto.getDescricao());
+	        }
+	        if (dto.getDataAbertura() != null) {
+	            solicitacao.setDataAbertura(dto.getDataAbertura());
+	        }
+	        if (dto.getDataFechamento() != null) {
+	            solicitacao.setDataFechamento(dto.getDataFechamento());
+	        }
+
+	        return mapper.toDTO(solicitacao);
+	    }
+	
+    private Solicitacao findEntityById(Long id) {
+        return solicitacaoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Solicitacao não encontrada. Id " + id));
+    }
+    
+    private void validarNumeroSIUnico(String numeroSI, Long idValidacao) {
+        Optional<Solicitacao> solicitacaoExistente = solicitacaoRepository.findByNumeroSI(numeroSI);
+        
+        if (solicitacaoExistente.isPresent()) {
+            if (!solicitacaoExistente.get().getId().equals(idValidacao)) {
+                throw new DatabaseException("Número de SI já existe: " + numeroSI);
+            }
+        }
+    }
 }
