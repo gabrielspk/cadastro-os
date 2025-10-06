@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.gabrielspk.cadastro_os.dto.security.AccountCredentialsDTO;
 import com.github.gabrielspk.cadastro_os.dto.security.TokenDTO;
+import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
 import com.github.gabrielspk.cadastro_os.security.JwtTokenProvider;
 
@@ -30,20 +31,18 @@ public class AuthService {
     	authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(email, senha));
 
-        var usuario = repository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Credenciais inválidas"));
-
+        var usuario = getUserByEmail(email);
         return tokenProvider.createAccessToken(email, usuario.getRoles());
     }
     
-    public TokenDTO refreshToken(String refreshToken) {
-    	
-    	String username = tokenProvider.getUsernameFromToken(refreshToken);
-    	
-    	var usuario = repository
-    			.findByEmail(username).
-    			orElseThrow(() -> new UsernameNotFoundException("Credenciais inválidas"));
-    	
-    	return tokenProvider.createAccessToken(usuario.getEmail(), usuario.getRoles());
-		}
+	public TokenDTO refreshToken(String refreshToken) {
+		String email = tokenProvider.getUsernameFromToken(refreshToken);
+		var usuario = getUserByEmail(email);
+		return tokenProvider.createAccessToken(usuario.getEmail(), usuario.getRoles());
 	}
+	
+	private Usuario getUserByEmail(String email) {
+	    return repository.findByEmail(email)
+	            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+	}
+}
