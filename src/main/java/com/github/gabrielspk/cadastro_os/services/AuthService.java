@@ -24,12 +24,26 @@ public class AuthService {
     private UsuarioRepository repository;
 
     public TokenDTO signIn(AccountCredentialsDTO credentials) {
-        authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getSenha()));
+        String email = credentials.getEmail();
+        String senha = credentials.getSenha();
+        
+    	authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(email, senha));
 
-        var usuario = repository.findByEmail(credentials.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("E-mail não encontrado"));
+        var usuario = repository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Credenciais inválidas"));
 
-        return tokenProvider.createAccessToken(credentials.getEmail(), usuario.getRoles());
+        return tokenProvider.createAccessToken(email, usuario.getRoles());
     }
-}
+    
+    public TokenDTO refreshToken(String refreshToken) {
+    	
+    	String username = tokenProvider.getUsernameFromToken(refreshToken);
+    	
+    	var usuario = repository
+    			.findByEmail(username).
+    			orElseThrow(() -> new UsernameNotFoundException("Credenciais inválidas"));
+    	
+    	return tokenProvider.createAccessToken(usuario.getEmail(), usuario.getRoles());
+		}
+	}
