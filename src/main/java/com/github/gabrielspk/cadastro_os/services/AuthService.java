@@ -1,19 +1,33 @@
 package com.github.gabrielspk.cadastro_os.services;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.gabrielspk.cadastro_os.dto.security.AccountCredentialsDTO;
 import com.github.gabrielspk.cadastro_os.dto.security.TokenDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioCreateDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioDTO;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
+import com.github.gabrielspk.cadastro_os.exceptions.RequiredObjectIsNullException;
+import com.github.gabrielspk.cadastro_os.mappers.UsuarioMapper;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
 import com.github.gabrielspk.cadastro_os.security.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AuthService {
+	
+	Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -23,6 +37,9 @@ public class AuthService {
 
     @Autowired
     private UsuarioRepository repository;
+    
+    @Autowired
+    private UsuarioMapper usuarioMapper;
 
     public TokenDTO signIn(AccountCredentialsDTO credentials) {
         String email = credentials.getEmail();
@@ -39,6 +56,37 @@ public class AuthService {
 		String email = tokenProvider.getUsernameFromToken(refreshToken);
 		var usuario = getUserByEmail(email);
 		return tokenProvider.createAccessToken(usuario.getEmail(), usuario.getRoles());
+	}
+	
+	public UsuarioDTO create(UsuarioCreateDTO dto) {
+		logger.info("Criando um novo usuário!");
+		
+		if (dto == null) throw new RequiredObjectIsNullException();
+		var usuario = usuarioMapper.fromCreateDTO(dto);
+		
+		usuario.setSenha(generateHashedPassword(dto.getSenha()));
+		
+	    usuario.setAccountNonExpired(true);
+	    usuario.setAccountNonLocked(true);
+	    usuario.setCredentialsNonExpired(true);
+	    usuario.setEnabled(true);
+		
+	    usuario = repository.save(usuario);
+	    
+	    return usuarioMapper.toDTO(usuario);
+	}
+	
+	private String generateHashedPassword(String password) {
+	    PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder(
+	            "", 8, 185000,
+	            Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+
+	    Map<String, PasswordEncoder> encoders = new HashMap<>();
+	    encoders.put("pbkdf2", pbkdf2Encoder);
+	    DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
+	    passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
+
+	    return passwordEncoder.encode(password);
 	}
 	
 	private Usuario getUserByEmail(String email) {
