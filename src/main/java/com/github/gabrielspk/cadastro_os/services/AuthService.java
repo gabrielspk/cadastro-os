@@ -3,6 +3,8 @@ package com.github.gabrielspk.cadastro_os.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,12 +19,11 @@ import com.github.gabrielspk.cadastro_os.dto.security.TokenDTO;
 import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioCreateDTO;
 import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioDTO;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
+import com.github.gabrielspk.cadastro_os.exceptions.DuplicateUserException;
 import com.github.gabrielspk.cadastro_os.exceptions.RequiredObjectIsNullException;
 import com.github.gabrielspk.cadastro_os.mappers.UsuarioMapper;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
 import com.github.gabrielspk.cadastro_os.security.JwtTokenProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class AuthService {
@@ -64,14 +65,20 @@ public class AuthService {
 		if (dto == null) throw new RequiredObjectIsNullException();
 		var usuario = usuarioMapper.fromCreateDTO(dto);
 		
+	    // Verifica se já existe um usuário com o mesmo e-mail
+	    if (repository.findByEmail(dto.getEmail()).isPresent()) {
+	        throw new DuplicateUserException("Já existe um usuário cadastrado com este e-mail");
+	    }
+		
 		usuario.setSenha(generateHashedPassword(dto.getSenha()));
 		
 	    usuario.setAccountNonExpired(true);
 	    usuario.setAccountNonLocked(true);
 	    usuario.setCredentialsNonExpired(true);
 	    usuario.setEnabled(true);
-		
+	    
 	    usuario = repository.save(usuario);
+		logger.info("Usuário criado com sucesso: {}", usuario.getEmail());
 	    
 	    return usuarioMapper.toDTO(usuario);
 	}
