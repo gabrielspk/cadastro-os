@@ -35,7 +35,6 @@ public class AuthResource {
 	@Operation(summary = "Autentica um usuário e retorna o token")
 	@PostMapping("/signin")
 	public ResponseEntity<?> signin(@RequestBody AccountCredentialsDTO credentials) {
-		System.out.println("Email: " + credentials.getEmail() + ", Senha: " + credentials.getSenha());
 		if (credentialsIsInvalid(credentials)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Credenciais inválidas");
 		}
@@ -61,7 +60,7 @@ public class AuthResource {
 	}
 	
 	@Operation(summary = "Cria um novo usuário")
-	@PostMapping("/registro")
+	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody UsuarioCreateDTO dto) {
 		logger.info("Recebida requisição de criação de usuário: {}", dto.getEmail());
 		UsuarioDTO created = service.create(dto);
