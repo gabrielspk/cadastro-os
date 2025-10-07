@@ -12,7 +12,6 @@ public class SolicitacaoDTO implements Serializable {
     private LocalDateTime dataAbertura;
     private LocalDateTime dataFechamento;
     private String status;
-    private Long usuarioCriadorId;
     private String usuarioCriadorNome;
 	
     public SolicitacaoDTO() {
@@ -66,14 +65,6 @@ public class SolicitacaoDTO implements Serializable {
 		this.status = status;
 	}
 
-	public Long getUsuarioCriadorId() {
-		return usuarioCriadorId;
-	}
-
-	public void setUsuarioCriadorId(Long usuarioCriadorId) {
-		this.usuarioCriadorId = usuarioCriadorId;
-	}
-
 	public String getUsuarioCriadorNome() {
 		return usuarioCriadorNome;
 	}
@@ -81,7 +72,4 @@ public class SolicitacaoDTO implements Serializable {
 	public void setUsuarioCriadorNome(String usuarioCriadorNome) {
 		this.usuarioCriadorNome = usuarioCriadorNome;
 	}
-	
-	
-	
 }

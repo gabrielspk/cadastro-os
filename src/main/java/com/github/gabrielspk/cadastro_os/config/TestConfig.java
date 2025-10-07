@@ -62,7 +62,7 @@ public class TestConfig implements CommandLineRunner {
 		        "Erro no sistema de login",
 		        LocalDateTime.now().minusDays(2),
 		        null,
-		        StatusSolicitacao.ABERTO,
+		        StatusSolicitacao.ABERTA,
 		        usuarioAdmin
 		);
 
@@ -80,7 +80,7 @@ public class TestConfig implements CommandLineRunner {
 		        "Bug na geração de relatórios",
 		        LocalDateTime.now().minusHours(10),
 		        null,
-		        StatusSolicitacao.ABERTO,
+		        StatusSolicitacao.ABERTA,
 		        usuarioAdmin
 		);
 

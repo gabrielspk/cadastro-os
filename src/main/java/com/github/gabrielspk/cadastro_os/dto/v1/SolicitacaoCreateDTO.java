@@ -1,9 +1,11 @@
 package com.github.gabrielspk.cadastro_os.dto.v1;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import com.github.gabrielspk.cadastro_os.entities.enums.StatusSolicitacao;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class SolicitacaoCreateDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -14,8 +16,9 @@ public class SolicitacaoCreateDTO implements Serializable {
 	@NotBlank(message = "A descrição é obrigatória")
     private String descricao;
 	
-	@NotNull(message = "O ID do usuário criador é obrigatório")
-    private Long usuarioId;
+    private LocalDateTime dataAbertura; // opcional
+    private LocalDateTime dataFechamento; // opcional
+    private StatusSolicitacao status; // opcional
 	
     public SolicitacaoCreateDTO() {
     	
@@ -37,11 +40,27 @@ public class SolicitacaoCreateDTO implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public Long getUsuarioId() {
-		return usuarioId;
+	public LocalDateTime getDataAbertura() {
+		return dataAbertura;
 	}
 
-	public void setUsuarioId(Long usuarioId) {
-		this.usuarioId = usuarioId;
+	public void setDataAbertura(LocalDateTime dataAbertura) {
+		this.dataAbertura = dataAbertura;
+	}
+
+	public LocalDateTime getDataFechamento() {
+		return dataFechamento;
+	}
+
+	public void setDataFechamento(LocalDateTime dataFechamento) {
+		this.dataFechamento = dataFechamento;
+	}
+
+	public StatusSolicitacao getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusSolicitacao status) {
+		this.status = status;
 	}
 }
