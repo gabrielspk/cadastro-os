@@ -2,19 +2,32 @@ spring:
   config:
     activate:
       on-profile: test
+  
   datasource:
-    driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
-    username: sa
-    password:
+  
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  
   h2:
     console:
       enabled: true
-      path: /h2-console
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    defer-datasource-initialization: true
 
 jwt:
-  secret: chaveDeTeste
-  expiration: 1000
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:3600000}
+
+# Dados de usuário para testes
+test:
+  user:
+    name: ${TEST_USER_NAME:Admin Test}
+    email: ${TEST_USER_EMAIL:admin@test.local}
+    password: ${TEST_USER_PASSWORD:Test@123456}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.github.gabrielspk: DEBUG
+    org.hibernate.SQL: DEBUG

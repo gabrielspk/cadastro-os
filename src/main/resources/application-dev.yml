@@ -1,0 +1,33 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:h2:mem:devdb
+  
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update  # ← Atualiza schema automaticamente
+  
+  h2:
+    console:
+      enabled: true
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:3600000}
+
+dev:
+  user:
+    name: ${DEV_USER_NAME:Admin Dev}
+    email: ${DEV_USER_EMAIL:admin@dev.local}
+    password: ${DEV_USER_PASSWORD:Dev@123456}
+  seed:
+    enabled: ${DEV_SEED_ENABLED:true}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.github.gabrielspk: DEBUG

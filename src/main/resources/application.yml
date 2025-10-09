@@ -1,17 +1,50 @@
+# application.yaml (configuração base)
 spring:
   application:
     name: cadastro-os
+  
+  profiles:
+    active: ${SPRING_PROFILE:dev}
+  
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+  
   jpa:
-    open-in-view: true
-    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    show-sql: ${JPA_SHOW_SQL:false}
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
     properties:
       hibernate:
         format_sql: true
+        use_sql_comments: true
+  
+  h2:
+    console:
+      enabled: false
+      path: /h2-console
+      settings:
+        web-allow-others: false
 
+# JWT - SEMPRE via variável de ambiente
 jwt:
-  secret-key: 53cr37
-  expire-lenght: 3600000
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:3600000}
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    root: INFO
+    org.springframework.security: ${LOG_LEVEL_SECURITY:INFO}
+    com.seupackage: ${LOG_LEVEL_APP:INFO}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
