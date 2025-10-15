@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Arquivos indesejados do projeto
+127.0.0.1
+docker
