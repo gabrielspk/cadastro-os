@@ -3,6 +3,7 @@ package com.github.gabrielspk.cadastro_os.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioCreateDTO;
 import com.github.gabrielspk.cadastro_os.dto.v1.UsuarioDTO;
 import com.github.gabrielspk.cadastro_os.entities.Usuario;
 import com.github.gabrielspk.cadastro_os.exceptions.DuplicateUserException;
+import com.github.gabrielspk.cadastro_os.exceptions.InvalidCredentialsException;
+import com.github.gabrielspk.cadastro_os.exceptions.InvalidJwtAuthenticationException;
 import com.github.gabrielspk.cadastro_os.exceptions.RequiredObjectIsNullException;
 import com.github.gabrielspk.cadastro_os.mappers.UsuarioMapper;
 import com.github.gabrielspk.cadastro_os.repositories.UsuarioRepository;
@@ -46,6 +49,10 @@ public class AuthService {
         String email = credentials.getEmail();
         String senha = credentials.getSenha();
         
+        if(isCredentialsInvalid(credentials)) {
+        	throw new InvalidCredentialsException("Credenciais inválidas");
+        }
+        
     	authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(email, senha));
 
@@ -53,10 +60,37 @@ public class AuthService {
         return tokenProvider.createAccessToken(email, usuario.getRoles());
     }
     
+	private boolean isCredentialsInvalid(AccountCredentialsDTO credentials) {
+		return credentials == null 
+				|| StringUtils.isBlank(credentials.getSenha())
+				|| StringUtils.isBlank(credentials.getEmail());
+	}
+    
 	public TokenDTO refreshToken(String refreshToken) {
+		if (isTokenNull(refreshToken)) {
+			throw new InvalidJwtAuthenticationException("Token de atualização ausente");
+		}
+		
 		String email = tokenProvider.getUsernameFromToken(refreshToken);
+		if (isUsernameNull(email)) {
+			throw new InvalidJwtAuthenticationException("Token JWT inválido");
+		}
+		
 		var usuario = getUserByEmail(email);
 		return tokenProvider.createAccessToken(usuario.getEmail(), usuario.getRoles());
+	}
+	
+    private boolean isTokenNull(String token) {
+        return StringUtils.isBlank(token);
+    }
+    
+    private boolean isUsernameNull(String email) {
+    	return StringUtils.isBlank(email);
+    }
+	
+	private Usuario getUserByEmail(String email) {
+	    return repository.findByEmail(email)
+	            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 	}
 	
 	public UsuarioDTO create(UsuarioCreateDTO dto) {
@@ -65,7 +99,6 @@ public class AuthService {
 		if (dto == null) throw new RequiredObjectIsNullException();
 		var usuario = usuarioMapper.fromCreateDTO(dto);
 		
-	    // Verifica se já existe um usuário com o mesmo e-mail
 	    if (repository.findByEmail(dto.getEmail()).isPresent()) {
 	        throw new DuplicateUserException("Já existe um usuário cadastrado com este e-mail");
 	    }
@@ -94,10 +127,5 @@ public class AuthService {
 	    passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
 
 	    return passwordEncoder.encode(password);
-	}
-	
-	private Usuario getUserByEmail(String email) {
-	    return repository.findByEmail(email)
-	            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 	}
 }

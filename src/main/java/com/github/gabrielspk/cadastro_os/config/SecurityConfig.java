@@ -26,6 +26,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.github.gabrielspk.cadastro_os.security.JwtTokenFilter;
 import com.github.gabrielspk.cadastro_os.security.JwtTokenProvider;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -93,6 +95,15 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/usuarios").denyAll()
                 )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+                        })
+                    )
+                
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .build();
         //@formatter:on

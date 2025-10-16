@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.github.gabrielspk.cadastro_os.exceptions.DuplicateUserException;
 import com.github.gabrielspk.cadastro_os.exceptions.ExceptionResponse;
+import com.github.gabrielspk.cadastro_os.exceptions.InvalidCredentialsException;
 import com.github.gabrielspk.cadastro_os.exceptions.InvalidJwtAuthenticationException;
 import com.github.gabrielspk.cadastro_os.exceptions.RequiredObjectIsNullException;
 import com.github.gabrielspk.cadastro_os.exceptions.ResourceNotFoundException;
@@ -35,13 +36,19 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler(InvalidJwtAuthenticationException.class)
     public final ResponseEntity<ExceptionResponse> handleInvalidJwtAuthenticationExceptions(InvalidJwtAuthenticationException ex, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
     
     @ExceptionHandler(DuplicateUserException.class)
     public final ResponseEntity<ExceptionResponse> handleDuplicateUserException(DuplicateUserException ex, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+    
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public final ResponseEntity<ExceptionResponse> handleInvalidCredentialsException(InvalidCredentialsException ex, WebRequest request) {
+    	ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
+    	return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)

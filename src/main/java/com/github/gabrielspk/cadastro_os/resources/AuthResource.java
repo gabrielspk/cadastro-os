@@ -1,11 +1,9 @@
 package com.github.gabrielspk.cadastro_os.resources;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,30 +32,19 @@ public class AuthResource {
 	
 	@Operation(summary = "Autentica um usuário e retorna o token")
 	@PostMapping("/signin")
-	public ResponseEntity<?> signin(@RequestBody AccountCredentialsDTO credentials) {
-		if (credentialsIsInvalid(credentials)) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Credenciais inválidas");
-		}
-
+	public ResponseEntity<?> signIn(@RequestBody AccountCredentialsDTO credentials) {
+        logger.info("Requisição de login recebida para o e-mail: {}", credentials.getEmail());
 		var token = service.signIn(credentials);
-
-		if (token == null) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Requisição inválida");
-		}
-
 		return ResponseEntity.ok(token);
 	}
 	
-	@Operation(summary = "Renova o token para um usuário autenticado")
-	@PutMapping("/refresh")
+	@Operation(summary = "Renova o token de acesso")
+	@PostMapping("/refresh")
 	public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String refreshToken) {
-		if (parametersAreInvalid(refreshToken)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Requisição inválida");
-		var token = service.refreshToken(refreshToken);
-		if (token == null) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Requisição inválida");
-		}
-		return ResponseEntity.ok(token);
+	    var token = service.refreshToken(refreshToken);
+	    return ResponseEntity.ok(token);
 	}
+
 	
 	@Operation(summary = "Cria um novo usuário")
 	@PostMapping("/register")
@@ -66,14 +53,4 @@ public class AuthResource {
 		UsuarioDTO created = service.create(dto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
-	
-	private boolean credentialsIsInvalid(AccountCredentialsDTO credentials) {
-		return credentials == null || 
-		       StringUtils.isBlank(credentials.getSenha()) ||
-		       StringUtils.isBlank(credentials.getEmail());
-	}
-	
-    private boolean parametersAreInvalid(String refreshToken) {
-        return StringUtils.isBlank(refreshToken);
-    }  
 }
