@@ -14,6 +14,7 @@ import com.github.gabrielspk.cadastro_os.exceptions.DuplicateUserException;
 import com.github.gabrielspk.cadastro_os.exceptions.ExceptionResponse;
 import com.github.gabrielspk.cadastro_os.exceptions.InvalidCredentialsException;
 import com.github.gabrielspk.cadastro_os.exceptions.InvalidJwtAuthenticationException;
+import com.github.gabrielspk.cadastro_os.exceptions.JwtTokenExpiredException;
 import com.github.gabrielspk.cadastro_os.exceptions.RequiredObjectIsNullException;
 import com.github.gabrielspk.cadastro_os.exceptions.ResourceNotFoundException;
 
@@ -47,6 +48,12 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
     
     @ExceptionHandler(InvalidCredentialsException.class)
     public final ResponseEntity<ExceptionResponse> handleInvalidCredentialsException(InvalidCredentialsException ex, WebRequest request) {
+    	ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
+    	return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(JwtTokenExpiredException.class)
+    public final ResponseEntity<ExceptionResponse> handleTokenExpiredException(JwtTokenExpiredException ex, WebRequest request) {
     	ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
     	return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }

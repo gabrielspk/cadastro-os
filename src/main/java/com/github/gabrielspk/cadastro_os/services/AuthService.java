@@ -71,21 +71,11 @@ public class AuthService {
 			throw new InvalidJwtAuthenticationException("Token de atualização ausente");
 		}
 		
-		String email = tokenProvider.getUsernameFromToken(refreshToken);
-		if (isUsernameNull(email)) {
-			throw new InvalidJwtAuthenticationException("Token JWT inválido");
-		}
-		
-		var usuario = getUserByEmail(email);
-		return tokenProvider.createAccessToken(usuario.getEmail(), usuario.getRoles());
+		return tokenProvider.refreshToken(refreshToken);
 	}
 	
     private boolean isTokenNull(String token) {
         return StringUtils.isBlank(token);
-    }
-    
-    private boolean isUsernameNull(String email) {
-    	return StringUtils.isBlank(email);
     }
 	
 	private Usuario getUserByEmail(String email) {

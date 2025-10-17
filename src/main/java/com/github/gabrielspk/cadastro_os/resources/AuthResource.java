@@ -44,7 +44,6 @@ public class AuthResource {
 	    var token = service.refreshToken(refreshToken);
 	    return ResponseEntity.ok(token);
 	}
-
 	
 	@Operation(summary = "Cria um novo usuário")
 	@PostMapping("/register")
