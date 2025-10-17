@@ -17,6 +17,7 @@ import com.github.gabrielspk.cadastro_os.exceptions.InvalidJwtAuthenticationExce
 import com.github.gabrielspk.cadastro_os.exceptions.JwtTokenExpiredException;
 import com.github.gabrielspk.cadastro_os.exceptions.RequiredObjectIsNullException;
 import com.github.gabrielspk.cadastro_os.exceptions.ResourceNotFoundException;
+import com.github.gabrielspk.cadastro_os.exceptions.SearchException;
 
 @ControllerAdvice
 @RestController
@@ -56,6 +57,12 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
     public final ResponseEntity<ExceptionResponse> handleTokenExpiredException(JwtTokenExpiredException ex, WebRequest request) {
     	ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
     	return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(SearchException.class)
+    public final ResponseEntity<ExceptionResponse> handleSearchException(SearchException ex, WebRequest request) {
+    	ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
+    	return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
