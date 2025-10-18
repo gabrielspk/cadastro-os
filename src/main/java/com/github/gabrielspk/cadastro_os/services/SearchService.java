@@ -2,9 +2,17 @@ package com.github.gabrielspk.cadastro_os.services;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,9 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.github.gabrielspk.cadastro_os.dto.v1.DocumentMatchDTO;
+import com.github.gabrielspk.cadastro_os.dto.v1.ExportRequestDTO;
 import com.github.gabrielspk.cadastro_os.dto.v1.SearchResultDTO;
 import com.github.gabrielspk.cadastro_os.exceptions.SearchException;
 import com.github.gabrielspk.cadastro_os.utils.EncodingDetector;
+import com.github.gabrielspk.cadastro_os.utils.ExcelReportGenerator;
 
 @Service
 public class SearchService {
@@ -33,14 +43,15 @@ public class SearchService {
         long inicio = System.currentTimeMillis();
         List<String> extensoesDescartadas = getExtensoesDescartadas(validarFpl);
 
-        // Listas thread-safe
         List<DocumentMatchDTO> documentosEncontrados = Collections.synchronizedList(new ArrayList<>());
         Set<String> documentosNaoEncontrados = ConcurrentHashMap.newKeySet();
         documentosNaoEncontrados.addAll(documentos);
 
-        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            final int[] arquivosPesquisados = {0};
+        int threads = Math.max(2, Runtime.getRuntime().availableProcessors());
+        ExecutorService executor = Executors.newFixedThreadPool(threads);
+        final int[] arquivosPesquisados = {0};
 
+        try {
             List<Callable<Void>> tarefas = Files.walk(Path.of(diretorioAtual))
                 .filter(Files::isRegularFile)
                 .filter(path -> deveProcessarArquivo(path.getFileName().toString(), extensoesDescartadas))
@@ -48,16 +59,16 @@ public class SearchService {
                     processarArquivo(path, documentos, documentosEncontrados, documentosNaoEncontrados, arquivosPesquisados);
                     return null;
                 })
-                .toList();
+                .collect(Collectors.toList());
 
             executor.invokeAll(tarefas);
-            
+
             long duracao = System.currentTimeMillis() - inicio;
             String tempoExecucao = formatarDuracao(duracao);
 
-            log.info("✅ Pesquisa finalizada — diretório: '{}', arquivos: {}, tempo: {}",
+            log.info("Pesquisa finalizada — diretório: '{}', arquivos: {}, tempo: {}",
                     diretorioAtual, arquivosPesquisados[0], tempoExecucao);
-
+        
             return new SearchResultDTO(
                 arquivosPesquisados[0],
                 documentosEncontrados,
@@ -68,9 +79,28 @@ public class SearchService {
         } catch (Exception e) {
             log.error("❌ Erro durante a execução da pesquisa: {}", e.getMessage(), e);
             throw new SearchException("Erro ao processar a pesquisa de documentos", e);
+        } finally {
+            executor.shutdown();
         }
     }
+    
+    public byte[] exportarRelatorio(ExportRequestDTO dados) {
+        try {
+            Path tempDir = Files.createTempDirectory("relatorios");
+            Path relatorio = ExcelReportGenerator.criarRelatorio(
+                dados.getDocumentosEncontrados(),
+                dados.getDocumentosNaoEncontrados(),
+                dados.getNomeArquivo(),
+                tempDir.toString()
+            );
 
+            return Files.readAllBytes(relatorio);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao exportar relatório Excel", e);
+        }
+    }
+    
     private boolean deveProcessarArquivo(String nomeArquivo, List<String> extensoesDescartadas) {
         return extensoesDescartadas.stream().noneMatch(nomeArquivo::endsWith);
     }
